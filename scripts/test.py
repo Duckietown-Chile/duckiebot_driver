@@ -72,7 +72,8 @@ def serialize_int32(data):
           
 def main():
     duck = DuckietownSerial('/dev/ttyUSB0', baudrate = 115200)
-    test_ping(duck)
+    time.sleep(2.0) # for arduino bootloader
+    test_blink(duck)
             
 if __name__ == '__main__':
     main()
