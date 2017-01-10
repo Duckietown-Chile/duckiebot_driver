@@ -7,20 +7,22 @@ import time
 import serial
 from array import array
 from threading import Lock
-
-# Instruction Set
-DXL_PING = 1
-DXL_READ_DATA = 2
-DXL_WRITE_DATA = 3
-DXL_REG_WRITE = 4
-DXL_ACTION = 5
-DXL_RESET = 6
-DXL_SYNC_WRITE = 131
+# Duckietown
+from duckietown_driver.message import DuckietownCommand
 
 class DuckietownSerial(object):
     """
     Provides low level control for Arduino based Ducktown robots
     """
+
+    # Instructions
+    PING = 1
+    READ_DATA = 2
+    WRITE_DATA = 3
+
+    # Control table
+    DEFAULT_ID = 1
+    LED = 6
 
     def __init__(self, port, baudrate):
         try:
@@ -52,7 +54,8 @@ class DuckietownSerial(object):
 
         try:
             data.extend(self.ser.read(4))
-            if not data[0:2] == ['\xff', '\xff']: raise Exception('Wrong packet prefix %s' % data[0:2])
+            if not data[0:2] == ['\xff', '\xff']:
+                raise Exception('Wrong packet prefix %s' % data[0:2])
             data.extend(self.ser.read(ord(data[3])))
             data = array('B', ''.join(data)).tolist()
         except Exception as e:
@@ -79,10 +82,10 @@ class DuckietownSerial(object):
         # directly from AX-12 manual:
         # Check Sum = ~ (ID + LENGTH + INSTRUCTION + PARAM_1 + ... + PARAM_N)
         # If the calculated value is > 255, the lower byte is the check sum.
-        checksum = 255 - ( (servo_id + length + DXL_READ_DATA + address + size) % 256 )
+        checksum = 255 - ( (servo_id + length + DuckietownSerial.READ_DATA + address + size) % 256 )
 
         # packet: FF  FF  ID LENGTH INSTRUCTION PARAM_1 ... CHECKSUM
-        packet = [0xFF, 0xFF, servo_id, length, DXL_READ_DATA, address, size, checksum]
+        packet = [0xFF, 0xFF, servo_id, length, DuckietownSerial.READ_DATA, address, size, checksum]
         packetStr = array('B', packet).tostring() # same as: packetStr = ''.join([chr(byte) for byte in packet])
 
         with self.serial_mutex:
@@ -105,10 +108,10 @@ class DuckietownSerial(object):
         # directly from AX-12 manual:
         # Check Sum = ~ (ID + LENGTH + INSTRUCTION + PARAM_1 + ... + PARAM_N)
         # If the calculated value is > 255, the lower byte is the check sum.
-        checksum = 255 - ((servo_id + length + DXL_WRITE_DATA + address + sum(data)) % 256)
+        checksum = 255 - ((servo_id + length + DuckietownSerial.WRITE_DATA + address + sum(data)) % 256)
 
         # packet: FF  FF  ID LENGTH INSTRUCTION PARAM_1 ... CHECKSUM
-        packet = [0xFF, 0xFF, servo_id, length, DXL_WRITE_DATA, address]
+        packet = [0xFF, 0xFF, servo_id, length, DuckietownSerial.WRITE_DATA, address]
         packet.extend(data)
         packet.append(checksum)
 
@@ -137,10 +140,10 @@ class DuckietownSerial(object):
         # directly from AX-12 manual:
         # Check Sum = ~ (ID + LENGTH + INSTRUCTION + PARAM_1 + ... + PARAM_N)
         # If the calculated value is > 255, the lower byte is the check sum.
-        checksum = 255 - ((servo_id + length + DXL_PING) % 256)
+        checksum = 255 - ((servo_id + length + DuckietownSerial.PING) % 256)
 
         # packet: FF  FF  ID LENGTH INSTRUCTION CHECKSUM
-        packet = [0xFF, 0xFF, servo_id, length, DXL_PING, checksum]
+        packet = [0xFF, 0xFF, servo_id, length, DuckietownSerial.PING, checksum]
         packetStr = array('B', packet).tostring()
 
         with self.serial_mutex:
@@ -158,14 +161,19 @@ class DuckietownSerial(object):
                 response = []
         return response
 
-    def set_led(self, state):
+    def send_command(self, cmd):
         """
-        Set LED state
+        Send Duckietown command
         """
-        LED_REG = 7
-        response = self.write(1, LED_REG, [state])
-        return response
+        raw_data = cmd.serialize()
+        self.write(DuckietownSerial.DEFAULT_ID, DuckietownSerial.LED, raw_data)
 
+    def get_status(self, status):
+        """
+        Get Duckietown robot status
+        """
+        raw_data = self.read(DuckietownSerial.DEFAULT_ID, DuckietownSerial.LED, 5)[5:-2]
+        status.deserialize(raw_data)
 
 class ChecksumError(Exception):
     def __init__(self, servo_id, response, checksum):
