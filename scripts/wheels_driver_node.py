@@ -39,8 +39,20 @@ class WheelsDriverNode(object):
             return
         # Velocity conversion @TODO
         
-        self.cmd.pwm_ch1 = int(255*msg.vel_left)
-        self.cmd.pwm_ch2 = int(255*msg.vel_right)
+        # Command saturation
+        msg.vel_left = min(max(msg.vel_left,-1.0),1.0)
+        msg.vel_right = min(max(msg.vel_right,-1.0),1.0)
+
+        # L9110 use inverse logic
+        if msg.vel_left >= 0.0:
+            self.cmd.pwm_ch1 = 255 - int(255*msg.vel_left)
+        else:
+            self.cmd.pwm_ch1 = int(255*msg.vel_left)
+
+        if msg.vel_right >= 0.0:
+            self.cmd.pwm_ch2 = 255 - int(255*msg.vel_right)
+        else:
+            self.cmd.pwm_ch2 = int(255*msg.vel_right)
 
         self.driver.send_command(self.cmd)
         
