@@ -40,8 +40,8 @@ class WheelsDriverNode(object):
         # Velocity conversion @TODO
         
         # Command saturation
-        msg.vel_left = min(max(msg.vel_left,-1.0),1.0)
-        msg.vel_right = min(max(msg.vel_right,-1.0),1.0)
+        msg.vel_left = min(max(msg.vel_left,-0.99),0.99)
+        msg.vel_right = -min(max(msg.vel_right,-0.99),0.99)# - Fix motor mount
 
         # L9110 use inverse logic
         if msg.vel_left >= 0.0:
@@ -53,7 +53,6 @@ class WheelsDriverNode(object):
             self.cmd.pwm_ch2 = 255 - int(255*msg.vel_right)
         else:
             self.cmd.pwm_ch2 = int(255*msg.vel_right)
-
         self.driver.send_command(self.cmd)
         
         # Put the wheel commands in a message and publish
