@@ -16,7 +16,6 @@ class WheelsDriverNode(object):
         rospy.loginfo("[%s] Initializing " %(self.node_name))
         self.estop=False
 
-
         # Setup driver
         self.driver = DuckietownSerial('/dev/ttyUSB0', baudrate = 115200)
         self.cmd = DuckietownCommand()
@@ -40,21 +39,26 @@ class WheelsDriverNode(object):
         # Velocity conversion @TODO
         
         # Command saturation
-        msg.vel_left = min(max(msg.vel_left,-0.99),0.99)
-        msg.vel_right = -min(max(msg.vel_right,-0.99),0.99)# - Fix motor mount
+        msg.vel_left = min(max(msg.vel_left,-1.0),1.0)
+        # Use - to change direction of the motor, right motor
+        # is reflected with respect to left motor
+        msg.vel_right = -min(max(msg.vel_right,-1.0),1.0)
 
         # L9110 use inverse logic
-        if msg.vel_left >= 0.0:
-            self.cmd.pwm_ch1 = 255 - int(255*msg.vel_left)
+        if msg.vel_left > 0.0:
+            self.cmd.pwm_ch1 = 255 - int(254*msg.vel_left)
         else:
             self.cmd.pwm_ch1 = int(255*msg.vel_left)
 
-        if msg.vel_right >= 0.0:
-            self.cmd.pwm_ch2 = 255 - int(255*msg.vel_right)
+        if msg.vel_right > 0.0:
+            self.cmd.pwm_ch2 = 255 - int(254*msg.vel_right)
         else:
             self.cmd.pwm_ch2 = int(255*msg.vel_right)
         self.driver.send_command(self.cmd)
         
+        # debug prints
+        # print "left  cmd: {}".format(self.cmd.pwm_ch1)
+        # print "right cmd: {}".format(self.cmd.pwm_ch2)
         # Put the wheel commands in a message and publish
         self.msg_wheels_cmd.header = msg.header
         # Record the time the command was given to the wheels_driver
