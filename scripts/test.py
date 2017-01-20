@@ -21,8 +21,10 @@ def test_blink(duck):
         time.sleep(0.1)
     
 def main():
-    duck = DuckietownSerial('/dev/ttyUSB0', baudrate = 115200)
-    time.sleep(2.0) # for arduino bootloader
+    duck = DuckietownSerial('/dev/ttyAMA0', baudrate = 57600)
+    for i in xrange(10):
+        print duck.ping(1)
+        time.sleep(1.0) # for arduino bootloader
     test_blink(duck)
             
 if __name__ == '__main__':
