@@ -21,6 +21,7 @@ def test_blink(duck):
         time.sleep(0.1)
     
 def main():
+<<<<<<< HEAD
     duck = DuckietownSerial('/dev/ttyAMA0', baudrate = 57600)
     for i in xrange(10):
         print duck.ping(1)

@@ -15,9 +15,14 @@ class WheelsDriverNode(object):
         self.node_name = rospy.get_name()
         rospy.loginfo("[%s] Initializing " %(self.node_name))
         self.estop=False
+        # Driver parameters
+        self.baudrate = rospy.get_param('~baudrate', 57600)
+        self.port = rospy.get_param('~port', '/dev/ttyAMA0')
+        rospy.loginfo("Using port {} at {} baud/s".format(self.port, self.baudrate))
+
 
         # Setup driver
-        self.driver = DuckietownSerial('/dev/ttyUSB0', baudrate = 115200)
+        self.driver = DuckietownSerial(self.port, self.baudrate)
         self.cmd = DuckietownCommand()
         self.status = DuckietownStatus()
         
