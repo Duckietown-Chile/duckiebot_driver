@@ -29,7 +29,7 @@ class DuckietownSerial(object):
             self.serial_mutex = Lock()
             self.ser = None
             self.ser = serial.Serial(port)
-            self.ser.setTimeout(0.015)
+            self.ser.timeout = 0.015
             self.ser.baudrate = baudrate
             self.port_name = port
         except serial.SerialException:
