@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(duckietown_driver)
+project(duckiebot_driver)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -99,7 +99,7 @@ catkin_python_setup()
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES duckietown_driver
+#  LIBRARIES duckiebot_driver
 #  CATKIN_DEPENDS rospy
 #  DEPENDS system_lib
 )
@@ -116,14 +116,14 @@ include_directories(
 )
 
 ## Declare a C++ library
-# add_library(duckietown_driver
-#   src/${PROJECT_NAME}/duckietown_driver.cpp
+# add_library(duckiebot_driver
+#   src/${PROJECT_NAME}/duckiebot_driver.cpp
 # )
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
-# add_dependencies(duckietown_driver ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# add_dependencies(duckiebot_driver ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
 # add_executable(duckietown_driver_node src/duckietown_driver_node.cpp)
@@ -152,7 +152,7 @@ include_directories(
 # )
 
 ## Mark executables and/or libraries for installation
-# install(TARGETS duckietown_driver duckietown_driver_node
+# install(TARGETS duckiebot_driver duckietown_driver_node
 #   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}

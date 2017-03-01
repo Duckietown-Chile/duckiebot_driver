@@ -1,8 +1,8 @@
 #!/usr/bin/python
 
 import time
-from duckietown_driver.serial_interface import DuckietownSerial
-from duckietown_driver.message import DuckietownCommand, DuckietownStatus
+from duckiebot_driver.serial_interface import DuckietownSerial
+from duckiebot_driver.message import DuckietownCommand, DuckietownStatus
 
 def test_blink(duck):
     cmd = DuckietownCommand()

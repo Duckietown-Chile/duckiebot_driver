@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package>
-  <name>duckietown_driver</name>
+  <name>duckiebot_driver</name>
   <version>0.0.0</version>
-  <description>The duckietown_driver package</description>
+  <description>The duckiebot_driver package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag --> 
   <!-- Example:  -->
@@ -19,7 +19,7 @@
   <!-- Url tags are optional, but mutiple are allowed, one per tag -->
   <!-- Optional attribute type can be: website, bugtracker, or repository -->
   <!-- Example: -->
-  <!-- <url type="website">http://wiki.ros.org/duckietown_driver</url> -->
+  <!-- <url type="website">http://wiki.ros.org/duckiebot_wheels_driver</url> -->
 
 
   <!-- Author tags are optional, mutiple are allowed, one per tag -->

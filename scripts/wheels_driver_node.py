@@ -7,8 +7,8 @@ __author__ = 'Rodrigo Muñoz'
 
 import rospy
 from duckietown_msgs.msg import WheelsCmdStamped, BoolStamped
-from duckietown_driver.serial_interface import DuckietownSerial
-from duckietown_driver.message import DuckietownCommand, DuckietownStatus
+from duckiebot_driver.serial_interface import DuckietownSerial
+from duckiebot_driver.message import DuckietownCommand, DuckietownStatus
 
 class WheelsDriverNode(object):
     def __init__(self):

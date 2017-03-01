@@ -8,7 +8,7 @@ import serial
 from array import array
 from threading import Lock
 # Duckietown
-from duckietown_driver.message import DuckietownCommand
+from duckiebot_driver.message import DuckietownCommand
 
 class DuckietownSerial(object):
     """
